@@ -1,0 +1,13 @@
+---
+
+- name: Create main mongo script file
+  template: src=main_script.j2 dest={{ mongodb_confdir }}/main_script.js
+
+- name: Create the file to create the mongod admins
+  template: src=create_admin.j2 dest={{ mongodb_confdir }}/create_admin.js
+
+- name: Create the file to initialize the mongod replica set
+  template: src=repset_init.j2 dest={{ mongodb_confdir }}/repset_init.js
+
+- name: Initialize the replication set
+  shell: docker exec -it mongod-server mongo localhost:"{{ mongod_port }}"/admin "{{ mongodb_confdir }}"/repset_init.js

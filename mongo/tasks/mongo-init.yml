@@ -1,0 +1,82 @@
+---
+# tasks file for mongo
+
+- name: create docker build directory
+  sudo: yes
+  file: path=/dbuild state=directory
+
+- name: "mongo: copy dockerfile"
+  sudo: yes
+  template: 
+    src: mongo-oem-docker/Dockerfile.j2 
+    dest: "/dbuild/Dockerfile"
+
+- name: "mongo: copy change_uid.sh for dockerfile"
+  sudo: yes
+  template: 
+    src: mongo-oem-docker/change_uid.sh.j2 
+    dest: "/dbuild/change_uid.sh"
+
+- name: "mongo: build mongo-oem image"
+  sudo: yes
+  shell: docker build -t mongo-oem .
+  args:
+    chdir: /dbuild
+
+#- name: drop docker build directory
+#  file: path=/dbuild state=absent
+
+- name: Create the mongodb user
+  sudo: yes
+  user: name=mongodb uid={{ mongo_uid }} comment="MongoDB"
+
+- name: Create the data directory for the namenode metadata
+  sudo: yes
+  file: path={{ mongodb_datadir_prefix }} owner={{ mongo_user}} group={{ mongo_user}} state=directory
+
+- name: create data directory for mongodb
+  sudo: yes
+  file: path={{ mongodb_datadir_prefix }}/db state=directory owner={{ mongo_user}} group={{ mongo_user}}
+
+- name: create directory for mongo config
+  sudo: yes
+  file: path={{ mongodb_confdir }} state=directory mode=0755 owner={{ mongo_user}} group={{ mongo_user}}
+
+- name: Create the mongodb configuration file
+  sudo: yes
+  template: 
+    src: mongo.conf.j2 
+    dest: "{{ mongodb_confdir }}/mongo.conf"
+    owner: "{{ mongo_user}}"
+    group: "{{ mongo_user}}"
+
+- name: Copy the keyfile for authentication
+  sudo: yes
+  copy: src=secret dest={{ mongodb_datadir_prefix }}/secret owner={{ mongo_user}} group={{ mongo_user}} mode=0400
+
+- name: mongo:copy service config
+  sudo: yes
+  template:
+    src: systemd/mongo.service.j2
+    dest: /etc/systemd/system/mongo.service
+    backup: yes
+    owner: mongodb
+    group: mongodb
+
+- name: mongo enable mongodb service
+  sudo: yes
+  service: name=mongo enabled=yes
+
+- name: mongodb.service enabled
+  sudo: yes
+  shell: systemctl enable mongo.service
+  tags: systemctl
+
+- name: reload service
+  sudo: yes
+  shell: systemctl daemon-reload
+  tags: systemctl
+
+- name: mongo start service
+  sudo: yes
+  service: name=mongo state=started

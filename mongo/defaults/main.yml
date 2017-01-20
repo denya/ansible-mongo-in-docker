@@ -1,0 +1,9 @@
+---
+# defaults file for mongo
+mongodb_datadir_prefix: /var/mongodata/
+mongodb_confdir: /etc/mongo
+mongod_port: 27017
+mongo_user: mongodb
+mongo_uid: 1999
+mongo_replset: mymongo_set1
+mongo_version: 3.2

@@ -1,0 +1,12 @@
+- name: init mongo nodes
+  hosts: mongo
+  roles:
+   - role: mongo
+  serial: 1
+
+- name: init mongo master node
+  hosts: mongo-master
+  sudo: yes
+  roles:
+   - role: mongo-master
+  serial: 1

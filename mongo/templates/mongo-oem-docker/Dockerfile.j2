@@ -1,0 +1,8 @@
+FROM mongo:{{ mongo_version }}
+LABEL description="OEM(non-modified) version of mongo image with fixed uid/guid for user({{ mongo_uid }})"
+
+ADD change_uid.sh /
+RUN chmod +x /change_uid.sh \
+  && sync \
+  && /change_uid.sh \
+  && rm -f /change_uid.sh \

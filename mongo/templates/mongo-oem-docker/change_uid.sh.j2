@@ -1,0 +1,19 @@
+#!/bin/bash
+
+MONGO_USER=mongodb
+USERMAP_UID={{ mongo_uid }}
+USERMAP_GID={{ mongo_uid }}
+
+map_mongod_uid() {
+  USERMAP_ORIG_UID=$(id -u ${MONGO_USER})
+  USERMAP_ORIG_GID=$(id -g ${MONGO_USER})
+  USERMAP_GID=${USERMAP_GID:-${USERMAP_UID:-$USERMAP_ORIG_GID}}
+  USERMAP_UID=${USERMAP_UID:-$USERMAP_ORIG_UID}
+  if [[ ${USERMAP_UID} != ${USERMAP_ORIG_UID} ]] || [[ ${USERMAP_GID} != ${USERMAP_ORIG_GID} ]]; then
+    echo "Adapting uid and gid for ${MONGO_USER}:${MONGO_USER} to $USERMAP_UID:$USERMAP_GID"
+    groupmod -g ${USERMAP_GID} ${MONGO_USER}
+    sed -i -e "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
+  fi
+}
+
+map_mongod_uid

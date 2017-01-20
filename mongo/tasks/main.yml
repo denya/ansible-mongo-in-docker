@@ -1,0 +1,9 @@
+---
+# tasks file for mongo
+- name: init mongo node
+  include: mongo-init.yml
+  when: not flush_all
+
+- name: flush all
+  include: mongo-delete.yml
+  when: flush_all

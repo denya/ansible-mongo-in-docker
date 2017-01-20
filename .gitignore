@@ -1,0 +1,6 @@
+.idea
+.DS_Store
+resource
+*.py[oc]
+*.sw[opn]
+.ropeproject

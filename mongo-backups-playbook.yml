@@ -1,0 +1,6 @@
+
+- name: init mongo master backup
+  hosts: mongo-backup
+  sudo: yes
+  roles:
+   - role: mongo-backup

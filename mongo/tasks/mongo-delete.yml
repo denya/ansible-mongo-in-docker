@@ -1,0 +1,36 @@
+---
+# tasks file for mongo
+- name: mongo stop service
+  sudo: yes
+  ignore_errors: yes
+  service: name=mongodb state=stopped
+
+- name: mongo disable mongodb service
+  sudo: yes
+  ignore_errors: yes
+  service: name=mongodb enabled=no
+
+- name: mongo:Delete service file
+  file: path="/etc/init/mongodb.conf" state=absent
+  ignore_errors: yes
+  tags: flush_all
+
+- name: mongo:Delete "{{mongodb_confdir}}" dir
+  file: path="{{mongodb_confdir}}" state=absent
+  ignore_errors: yes
+  tags: flush_all
+
+- name: mongo:Delete "{{mongodb_confdir}}" dir
+  file: path="{{mongodb_datadir_prefix}}" state=absent
+  ignore_errors: yes
+  tags: flush_all
+
+- name: mongo:docker delete mongo image
+  sudo: yes
+  shell: docker rmi mongo
+  ignore_errors: yes
+  tags: flush_all
+
+- name: Delete the mongodb user
+  ignore_errors: yes
+  user: name=mongodb uid={{ mongo_uid }} state=absent remove=yes

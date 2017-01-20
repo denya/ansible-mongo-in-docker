@@ -1,0 +1,10 @@
+db.createUser( {
+    user: "siteUserAdmin",
+    pwd: "{{ mongo_password }}",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  });
+db.createUser( {
+    user: "siteRootAdmin",
+    pwd: "{{ mongo_password }}",
+    roles: [ { role: "root", db: "admin" } ]
+  });

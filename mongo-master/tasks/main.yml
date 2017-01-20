@@ -1,0 +1,4 @@
+---
+- name: init mongo master node
+  include: mongo-master-init.yml
+  when: not flush_all

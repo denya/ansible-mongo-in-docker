@@ -1,0 +1,13 @@
+[Unit]
+Description=MongoDB node
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStartPre=-/usr/bin/docker rm -f -v mongod-server
+ExecStart=/usr/bin/docker run --rm -v {{ mongodb_datadir_prefix }}:{{ mongodb_datadir_prefix }} -v {{ mongodb_confdir }}:{{ mongodb_confdir }} -p {{ mongod_port }}:{{ mongod_port }} --net=mongodb --hostname={{ inventory_hostname }} --name mongod-server mongo-oem --config  {{ mongodb_confdir }}/mongo.conf
+ExecStop=/usr/bin/docker stop -t 10 mongod-server
+
+[Install]
+WantedBy=local.target

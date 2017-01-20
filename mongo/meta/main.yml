@@ -1,0 +1,9 @@
+---
+galaxy_info:
+  author: Denis Moskalets
+  description: Role for configure mongo cluster
+  company: Octobank
+  license: license
+  min_ansible_version: 1.2
+
+dependencies: []

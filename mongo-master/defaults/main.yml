@@ -1,0 +1,5 @@
+---
+# defaults file for mongo
+mongodb_confdir: /etc/mongo
+mongod_port: 27017
+mongo_password: mongopassowrdhere
