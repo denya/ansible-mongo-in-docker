@@ -1,6 +1,6 @@
 - name: Add mongo_s3_backup to cron
   sudo: true
   cron: name="mongos3backup" minute=0 hour=4
-        user="root" job="docker run --rm --net=mongodb --env MONGODB_BACKUP_HOST='mongod-server' --env MONGODB_BACKUP_PORT=27017 --env MONGODB_BACKUP_DB='{{backup_database }}' --env AWS_ACCESS_KEY_ID={{backups_s3_key}}  --env AWS_SECRET_ACCESS_KEY='{{backups_s3_secret}}' --env AWS_DEFAULT_REGION='{{aws_region}}' --env S3_BUCKET='{{backups_s3_bucket}}' --env S3_PATH='mongodb' --env S3_BACKUP=yes denya/mongobackup-s3"
+        user="root" job="docker run --rm --env MONGODB_BACKUP_HOST='mongod-server' --env MONGODB_BACKUP_PORT=27017 --env MONGODB_BACKUP_DB='{{backup_database }}' --env AWS_ACCESS_KEY_ID={{backups_s3_key}}  --env AWS_SECRET_ACCESS_KEY='{{backups_s3_secret}}' --env AWS_DEFAULT_REGION='{{aws_region}}' --env S3_BUCKET='{{backups_s3_bucket}}' --env S3_PATH='mongodb' --env S3_BACKUP=yes denya/mongobackup-s3"
         cron_file=s3mongo_backup
   tags: install
